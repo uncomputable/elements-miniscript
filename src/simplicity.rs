@@ -7,7 +7,7 @@ use std::sync::Arc;
 use bitcoin_miniscript::ToPublicKey;
 use elements::{LockTime, SchnorrSig, Sequence};
 use elements::taproot::TapLeafHash;
-use simplicity::{Policy, FailEntropy, Preimage32};
+use simplicity::{Policy, FailEntropy, Preimage32, Cmr};
 
 use crate::policy::concrete::PolicyError;
 use crate::{expression, Error, MiniscriptKey};
@@ -68,6 +68,9 @@ impl_from_tree!(
                 }
                 Ok(Policy::Threshold(thresh as usize, subs))
             }
+            ("asm", 1) => expression::terminal(&top.args[0], |x| {
+                Cmr::from_str(x).map(Policy::Assembly)
+            }),
             _ => Err(Error::Unexpected(top.name.to_owned())),
         }
     }
