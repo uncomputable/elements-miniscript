@@ -7,7 +7,8 @@ use std::sync::Arc;
 use bitcoin_miniscript::ToPublicKey;
 use elements::{LockTime, SchnorrSig, Sequence};
 use elements::taproot::TapLeafHash;
-use simplicity::{Policy, FailEntropy, Preimage32, Cmr};
+use simplicity::{Policy, FailEntropy, Preimage32, Cmr, WitnessNode};
+use simplicity::jet::Elements;
 
 use crate::policy::concrete::PolicyError;
 use crate::{expression, Error, MiniscriptKey};
@@ -156,6 +157,10 @@ impl<Pk: ToPublicKey, S: crate::Satisfier<Pk>> simplicity::Satisfier<Pk> for Sat
 
     fn check_after(&self, locktime: LockTime) -> bool {
         self.0.check_after(locktime)
+    }
+
+    fn lookup_asm_program(&self, cmr: Cmr) -> Option<Arc<WitnessNode<Elements>>> {
+        self.0.lookup_asm_program(cmr)
     }
 }
 

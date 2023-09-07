@@ -219,6 +219,11 @@ pub trait Satisfier<Pk: MiniscriptKey + ToPublicKey> {
     ) -> Option<(schnorr::Signature, i64, u64)> {
         None
     }
+
+    /// Given a CMR, look up a matching satisfied Simplicity program.
+    fn lookup_asm_program(&self, _: simplicity::Cmr) -> Option<Arc<simplicity::WitnessNode<simplicity::jet::Elements>>> {
+        None
+    }
 }
 
 // Allow use of `()` as a "no conditions available" satisfier
@@ -458,6 +463,10 @@ impl<'a, Pk: MiniscriptKey + ToPublicKey, S: Satisfier<Pk>> Satisfier<Pk> for &'
     ) -> Option<(schnorr::Signature, i64, u64)> {
         (**self).lookup_price_oracle_sig(pk, time)
     }
+
+    fn lookup_asm_program(&self, cmr: simplicity::Cmr) -> Option<Arc<simplicity::WitnessNode<simplicity::jet::Elements>>> {
+        (**self).lookup_asm_program(cmr)
+    }
 }
 
 impl<'a, Pk: MiniscriptKey + ToPublicKey, S: Satisfier<Pk>> Satisfier<Pk> for &'a mut S {
@@ -591,6 +600,10 @@ impl<'a, Pk: MiniscriptKey + ToPublicKey, S: Satisfier<Pk>> Satisfier<Pk> for &'
         time: u64,
     ) -> Option<(schnorr::Signature, i64, u64)> {
         (**self).lookup_price_oracle_sig(pk, time)
+    }
+
+    fn lookup_asm_program(&self, cmr: simplicity::Cmr) -> Option<Arc<simplicity::WitnessNode<simplicity::jet::Elements>>> {
+        (**self).lookup_asm_program(cmr)
     }
 }
 
